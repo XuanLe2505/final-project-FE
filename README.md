@@ -24,3 +24,8 @@ ReactJS, Redux Toolkit, NodeJS, ExpressJS, MongoDB
 2. Github Back-End: https://github.com/XuanLe2505/final-project-BE
 3. API: https://innisfree-final-project.herokuapp.com
 4. Website: https://innisfree-fp.netlify.app/
+
+# account test demo:
+
+user@gmail.com (user) - role user
+admin@gmail.com (xuanle) -role admin {role admin chưa làm xong nên chỉ test login, logout}
