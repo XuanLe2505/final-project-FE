@@ -103,7 +103,7 @@ function AuthProvider({ children }) {
     };
 
     initialize();
-  }, []);
+  }, [dispatch, reduxDispatch]);
 
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/login", { email, password });
