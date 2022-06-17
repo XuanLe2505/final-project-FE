@@ -29,7 +29,7 @@ import { gapi } from "gapi-script";
 
 const clientId =
   "290047459319-t8523l0f6k6331umo5qt5rr04eviacho.apps.googleusercontent.com";
-const appId = "5131167370300501";
+const appId = "573914060967636";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
