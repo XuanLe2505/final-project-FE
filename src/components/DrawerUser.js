@@ -12,7 +12,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories } from "../features/headerSlice";
+import { getCategories } from "../features/categorySlice";
 
 const DrawerUser = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -25,7 +25,7 @@ const DrawerUser = () => {
    }, [dispatch]);
 
    const parentCategories = categories
-     ? categories.filter((category) => !category.parent)
+     ? categories.filter((category) => category.parent === null)
      : [];
 
   return (

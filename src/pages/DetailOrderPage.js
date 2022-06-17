@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import fCurrency from "../utils/fCurrency";
+import fCurrency from "../utils/numberFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleOrder } from "../features/orderSlice";
 import { format, parseISO } from "date-fns";

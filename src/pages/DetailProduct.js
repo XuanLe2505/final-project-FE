@@ -16,7 +16,7 @@ import React, { useEffect } from "react";
 import { useParams, Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleProduct } from "../features/productSlice";
-import fCurrency from "../utils/fCurrency";
+import fCurrency from "../utils/numberFormat";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import LoadingScreen from "../components/LoadingScreen";

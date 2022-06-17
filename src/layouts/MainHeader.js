@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import logoImage from "../images/header_logo.svg";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import {
   Box,
   AppBar,
-  Tab,
-  Tabs,
-  IconButton,
   Toolbar,
   Typography,
   Link,
@@ -18,32 +14,21 @@ import {
   useTheme,
   Menu,
   MenuItem,
-  InputBase,
   Container,
   Button,
+  Avatar,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import DrawerUser from "../components/DrawerUser";
-import { useDispatch, useSelector } from "react-redux";
-import { getCategories } from "../features/headerSlice";
 import CartWidget from "../components/CartWidget";
+import HeaderMenu from "../components/HeaderMenu";
+import { useDispatch } from "react-redux";
+import { getCurrentUserProfile } from "../features/userSlice";
 
 function MainHeader() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [value, setValue] = useState();
-
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.header);
-
-  useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
-
-  const parentCategories = categories
-    ? categories.filter((category) => !category.parent)
-    : [];
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const openMenu = Boolean(anchorEl);
 
@@ -123,28 +108,7 @@ function MainHeader() {
               </>
             ) : (
               <>
-                <Tabs
-                  // sx={{
-                  //   marginLeft: -3,
-                  // }}
-                  indicatorColor="secondary"
-                  textColor="inherit"
-                  value={value}
-                  onChange={(e, value) => setValue(value)}
-                >
-                  {parentCategories.map((parentCategory) => (
-                    <Tab
-                      key={parentCategory._id}
-                      value={parentCategory.name}
-                      label={parentCategory.name}
-                      component={RouterLink}
-                      to={`/${parentCategory.name}`}
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    />
-                  ))}
-                </Tabs>
+                <HeaderMenu />
               </>
             )}
 
@@ -164,14 +128,11 @@ function MainHeader() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <AccountCircleIcon
-                      sx={{
-                        marginRight: "10px",
-                        color: "#000",
-                        cursor: "pointer",
-                      }}
+                    <Avatar
+                      sx={{ width: 32, height: 32 }}
+                      alt="avatar"
+                      src={user?.avatarUrl}
                     />
-                    <Typography>{user?.username}</Typography>
                   </Box>
                   <Menu
                     id="basic-menu"
@@ -182,8 +143,14 @@ function MainHeader() {
                       "aria-labelledby": "basic-button",
                     }}
                   >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {user?.username}
+                    </Typography>
                     <MenuItem
-                      onClick={handleClose}
+                      onClick={() => {
+                        handleClose();
+                        dispatch(getCurrentUserProfile());
+                      }}
                       to="/me"
                       component={RouterLink}
                     >
@@ -238,31 +205,7 @@ function MainHeader() {
             </Box>
           </Toolbar>
         </Container>
-        <Box
-          sx={{
-            height: 70,
-            bgcolor: "white",
-            color: "white",
-            fontWeight: 500,
-            textAlign: "center",
-          }}
-        >
-          <InputBase
-            sx={{
-              ml: 1,
-              flex: 1,
-              width: 300,
-              fontSize: "20px",
-              borderBottom: 2,
-              borderColor: "green",
-            }}
-            placeholder="     Search Anything You Want   "
-            inputProps={{ "aria-label": "Anything You Want To Find" }}
-          />
-          <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </Box>
+        {/* <ProductsSearch/> */}
       </AppBar>
     </Box>
   );

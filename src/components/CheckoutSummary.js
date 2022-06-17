@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import fCurrency from "../utils/fCurrency";
+import fCurrency from "../utils/numberFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { createNewOrder } from "../features/orderSlice";
 import { clearCart } from "../features/cartSlice";

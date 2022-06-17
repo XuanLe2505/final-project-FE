@@ -72,7 +72,7 @@ function AuthProvider({ children }) {
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
 
-          const response = await apiService.get("/users/me");
+          const response = await apiService.get("user/me");
           const user = response.data;
 
           dispatch({
@@ -106,7 +106,35 @@ function AuthProvider({ children }) {
   }, [dispatch, reduxDispatch]);
 
   const login = async ({ email, password }, callback) => {
-    const response = await apiService.post("/login", { email, password });
+    const response = await apiService.post("user/login", { email, password });
+    const { user, accessToken } = response.data;
+
+    setSession(accessToken);
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: { user },
+    });
+    reduxDispatch(setCartProducts(user.cart.products));
+
+    callback();
+  };
+
+  const googleLogin = async (res, callback) => {
+    const response = await apiService.post("user/googleLogin", { tokenId: res.tokenId });
+    const { user, accessToken } = response.data;
+
+    setSession(accessToken);
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: { user },
+    });
+    reduxDispatch(setCartProducts(user.cart.products));
+
+    callback();
+  };
+
+  const facebookLogin = async (res, callback) => {
+    const response = await apiService.post("user/facebookLogin", { accessToken: res.accessToken, userID: res.userID });
     const { user, accessToken } = response.data;
 
     setSession(accessToken);
@@ -126,8 +154,7 @@ function AuthProvider({ children }) {
       password,
     });
 
-    const { user, accessToken } = response.data;
-    setSession(accessToken);
+    const { user } = response.data;
     dispatch({
       type: REGISTER_SUCCESS,
       payload: { user },
@@ -147,6 +174,8 @@ function AuthProvider({ children }) {
       value={{
         ...state,
         login,
+        googleLogin,
+        facebookLogin,
         register,
         logout,
       }}

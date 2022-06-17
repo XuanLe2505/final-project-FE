@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiService from "../app/apiService";
 
 const initialState = {
+  search: "",
   totalPage: "",
   products: [],
   status: "idle",
@@ -13,8 +14,9 @@ const initialState = {
 
 export const getProducts = createAsyncThunk(
   "products/getProducts",
-  async ({ page, limit, categoryName }) => {
-    let url = `/products?page=${page}&limit=${limit}&category=${categoryName}`;
+  async ({ page, limit, categoryName, sortBy, search }) => {
+    sortBy = Object.values(sortBy);
+    let url = `/products?page=${page}&limit=${limit}&category=${categoryName}&search=${search}&sortBy=${sortBy}`;
     const response = await apiService.get(url);
     return response.data;
   }
@@ -42,7 +44,7 @@ const productSlice = createSlice({
       .addCase(getProducts.fulfilled, (state, action) => {
         state.status = "idle";
         state.loading = false;
-        state.products = action.payload.productsList;
+        state.products = action.payload.products;
         state.totalPage = action.payload.totalPage;
       })
       .addCase(getProducts.rejected, (state, action) => {

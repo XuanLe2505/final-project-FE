@@ -21,10 +21,12 @@ import { getProducts } from "../features/productSlice";
 import LoadingScreen from "../components/LoadingScreen";
 import PaginationBar from "../components/PaginationBar";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import fCurrency from "../utils/fCurrency";
+import fCurrency from "../utils/numberFormat";
 import { makeStyles } from "@mui/styles";
 import { addToCart } from "../features/cartSlice";
 import useAuth from "../hooks/useAuth";
+import ProductsSort from "../components/ProductsSort";
+import ProductsSearch from "../components/ProductsSearch";
 const useStyles = makeStyles({
   button: {
     color: "#fff",
@@ -38,9 +40,10 @@ const useStyles = makeStyles({
 const Products = () => {
   const { isAuthenticated } = useAuth();
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState("");
+  const [search, setSearch] = useState("");
   const limit = 12;
   const params = useParams();
-
   const categoryName = params.category;
 
   const dispatch = useDispatch();
@@ -48,9 +51,17 @@ const Products = () => {
     (state) => state.products
   );
 
+  const handleSearch = (value) => {
+    console.log({ value });
+    setSearch(value);
+  };
+  const handleSort = (value) => {
+    setSortBy(value);
+  };
   useEffect(() => {
-    if (categoryName) dispatch(getProducts({ page, limit, categoryName }));
-  }, [page, limit, categoryName, dispatch]);
+    if (categoryName)
+      dispatch(getProducts({ page, limit, categoryName, sortBy, search }));
+  }, [page, limit, categoryName, sortBy, search, dispatch]);
 
   const navigate = useNavigate();
   const handleClickProduct = (productId) => {
@@ -61,107 +72,131 @@ const Products = () => {
 
   return (
     <>
-      <Stack
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          mb: "70px",
-          bgcolor: "#074439",
-          color: "#fff",
-        }}
-      >
-        <Typography variant="h5" sx={{ textAlign: "center", m: 4 }}>
-          {categoryName}
-        </Typography>
+      <Stack>
+        <Box
+          sx={{
+            bgcolor: "#074439",
+            color: "#fff",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{ textAlign: "center", m: 4, textTransform: "capitalize" }}
+          >
+            {categoryName}
+          </Typography>
+        </Box>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       </Stack>
+      <Container sx={{ sm: {mx: "3rem"} }}>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent={{ xs: "center", sm: "right" }}
+          alignItems="center"
+          spacing={2}
+          sx={{
+            my: "30px",
+          }}
+        >
+          <ProductsSearch handleSearch={handleSearch} />
+          <ProductsSort handleSort={handleSort} />
+        </Stack>
+      </Container>
       <Container sx={{ mb: "3rem" }}>
         {loading ? (
           <LoadingScreen />
         ) : (
-          <Grid container>
-            {products.map((product) => (
-              <Grid
-                key={product._id}
-                item={true}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-                md={3}
-                sm={6}
-                xs={12}
-              >
-                <Card
+          <>
+            <Grid container>
+              {products.map((product) => (
+                <Grid
                   key={product._id}
+                  item={true}
                   sx={{
-                    width: "15rem",
-                    height: "24rem",
-                    marginBottom: "3rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
                   }}
+                  md={3}
+                  sm={6}
+                  xs={12}
                 >
-                  <CardActionArea
-                    onClick={() => handleClickProduct(product._id)}
+                  <Card
+                    key={product._id}
                     sx={{
                       width: "15rem",
-                      height: "20rem",
-                      marginBottom: "1rem",
+                      height: "24rem",
+                      marginBottom: "3rem",
                     }}
                   >
-                    <FavoriteBorderIcon
-                      sx={{ position: "absolute", right: "10px", top: "10px" }}
-                    />
-                    <CardMedia
-                      component="img"
-                      image={`${product.image}`}
-                      alt={`${product.name}`}
-                    />
-                    <CardContent>
-                      <Typography
-                        gutterBottom
-                        component="div"
-                        sx={{ fontSize: "14px" }}
-                      >
-                        {`${product.name}`}
-                      </Typography>
-                      <Typography
-                        gutterBottom
-                        component="div"
-                        sx={{ fontSize: "14px", textAlign: "center", mb: 2 }}
-                      >
-                        {`${fCurrency(product.price)}`}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <Box sx={{ display: "flex", justifyContent: "right", mr: 2 }}>
-                    {isAuthenticated ? (
-                      <Button
-                        className={classes.button}
-                        variant="secondary"
-                        onClick={() => {
-                          dispatch(addToCart(product));
+                    <CardActionArea
+                      onClick={() => handleClickProduct(product._id)}
+                      sx={{
+                        width: "15rem",
+                        height: "20rem",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <FavoriteBorderIcon
+                        sx={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "10px",
                         }}
-                      >
-                        Add to Cart
-                      </Button>
-                    ) : (
-                      <Button
-                        className={classes.button}
-                        variant="secondary"
-                        onClick={() => {
-                          navigate("/login");
-                        }}
-                      >
-                        Add to Cart
-                      </Button>
-                    )}
-                  </Box>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                      />
+                      <CardMedia
+                        component="img"
+                        image={`${product.image}`}
+                        alt={`${product.name}`}
+                      />
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          component="div"
+                          sx={{ fontSize: "14px" }}
+                        >
+                          {`${product.name}`}
+                        </Typography>
+                        <Typography
+                          gutterBottom
+                          component="div"
+                          sx={{ fontSize: "14px", textAlign: "center", mb: 2 }}
+                        >
+                          {`${fCurrency(product.price)}`}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "right", mr: 2 }}
+                    >
+                      {isAuthenticated ? (
+                        <Button
+                          className={classes.button}
+                          variant="secondary"
+                          onClick={() => {
+                            dispatch(addToCart(product));
+                          }}
+                        >
+                          Add to Cart
+                        </Button>
+                      ) : (
+                        <Button
+                          className={classes.button}
+                          variant="secondary"
+                          onClick={() => {
+                            navigate("/login");
+                          }}
+                        >
+                          Add to Cart
+                        </Button>
+                      )}
+                    </Box>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </>
         )}
         <Box
           sx={{

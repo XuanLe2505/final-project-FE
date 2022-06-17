@@ -1,27 +1,24 @@
 import React, { useState } from "react";
 import {
-  Link,
   Stack,
   Alert,
+  Container,
   IconButton,
   InputAdornment,
-  Container,
+  Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-import { Link as RouterLink } from "react-router-dom";
-
 import { FormProvider, FTextField } from "../components/form";
-import useAuth from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import apiService from "../app/apiService";
+import { useParams } from "react-router-dom";
 
-const RegisterSchema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+const ResetSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
   passwordConfirmation: Yup.string()
     .required("Please confirm your password")
@@ -29,21 +26,19 @@ const RegisterSchema = Yup.object().shape({
 });
 
 const defaultValues = {
-  username: "",
-  email: "",
   password: "",
   passwordConfirmation: "",
 };
 
-function RegisterPage() {
-  // const navigate = useNavigate();
-  const auth = useAuth();
+function ResetPasswordPage() {
+  const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
-
+  const { accessToken} = useParams();
+  console.log({ accessToken });
   const methods = useForm({
-    resolver: yupResolver(RegisterSchema),
+    resolver: yupResolver(ResetSchema),
     defaultValues,
   });
   const {
@@ -54,9 +49,15 @@ function RegisterPage() {
   } = methods;
 
   const onSubmit = async (data) => {
-    const { username, email, password } = data;
+    const { password } = data;
     try {
-      await auth.register({ username, email, password });
+      const response = await apiService.post(
+        "/user/reset",
+        { password },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setSuccess(response.message);
+      return response.data;
     } catch (error) {
       reset();
       setError("responseError", error);
@@ -64,21 +65,18 @@ function RegisterPage() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ my: 4 }}>
+    <Container maxWidth="xs" sx={{ mt: 4 }}>
+      <Typography
+        sx={{ textAlign: "center", fontSize: "20px", fontWeight: 500, mb: 2 }}
+      >
+        Reset Password
+      </Typography>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {!!errors.responseError && (
+          {errors.responseError && (
             <Alert severity="error">{errors.responseError.message}</Alert>
           )}
-          <Alert severity="info">
-            Already have an account?{" "}
-            <Link variant="subtitle2" component={RouterLink} to="/login">
-              Sign in
-            </Link>
-          </Alert>
-
-          <FTextField name="username" label="Full name" />
-          <FTextField name="email" label="Email address" />
+          {success && <Alert severity="success">{success}</Alert>}
           <FTextField
             name="password"
             label="Password"
@@ -119,7 +117,6 @@ function RegisterPage() {
               ),
             }}
           />
-
           <LoadingButton
             fullWidth
             size="large"
@@ -127,7 +124,7 @@ function RegisterPage() {
             variant="contained"
             loading={isSubmitting}
           >
-            Register
+            Change password
           </LoadingButton>
         </Stack>
       </FormProvider>
@@ -135,4 +132,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default ResetPasswordPage;

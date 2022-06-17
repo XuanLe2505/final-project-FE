@@ -11,7 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import React from "react";
-import fCurrency from "../utils/fCurrency";
+import fCurrency from "../utils/numberFormat";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -28,7 +28,6 @@ function CartProductList({ setActiveStep }) {
   const dispatch = useDispatch();
 
   const { cartProducts } = useSelector((state) => state.cart);
-  console.log("cart", cartProducts);
 
   return (
     <Box>
