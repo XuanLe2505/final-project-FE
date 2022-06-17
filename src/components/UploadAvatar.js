@@ -58,6 +58,9 @@ function UploadAvatar({ error, file, helperText, sx, ...other }) {
     isDragReject,
     fileRejections,
   } = useDropzone({
+    accept: {
+     'image/*': ['.jpeg', '.jpg', '.png'],
+    },
     multiple: false,
     ...other,
   });
