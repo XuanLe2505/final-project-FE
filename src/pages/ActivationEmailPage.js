@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, Link as RouterLink } from "react-router-dom";
@@ -15,8 +15,14 @@ function ActivationEmail() {
   }, [activationToken, dispatch]);
 
   return (
-    <>
-      <Typography>Email verified successfully</Typography>;
+    <Stack
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      spacing={2}
+      sx={{mt: 4}}
+    >
+      <Typography sx={{fontSize: "30px"}}>Email verified successfully</Typography>
       <Button
         sx={{
           border: "none",
@@ -39,7 +45,7 @@ function ActivationEmail() {
       >
         Login
       </Button>
-    </>
+    </Stack>
   );
 }
 
