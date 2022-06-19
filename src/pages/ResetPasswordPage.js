@@ -36,7 +36,6 @@ function ResetPasswordPage() {
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
   const { accessToken} = useParams();
-  console.log({ accessToken });
   const methods = useForm({
     resolver: yupResolver(ResetSchema),
     defaultValues,
