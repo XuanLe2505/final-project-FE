@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import ActivationEmail from "../pages/ActivationEmailPage";
+import ActivationEmailPage from "../pages/ActivationEmailPage";
 import useAuth from "../hooks/useAuth";
 import AdminLayout from "../layouts/AdminLayout";
 import BlankLayout from "../layouts/BlankLayout";
@@ -45,7 +45,7 @@ function Router() {
             />
             <Route
               path="/user/activate/:activationToken"
-              element={<ActivationEmail />}
+              element={<ActivationEmailPage />}
             />
             <Route
               path="/user/reset/:accessToken"
