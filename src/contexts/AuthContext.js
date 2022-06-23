@@ -34,7 +34,7 @@ const reducer = (state, action) => {
     case REGISTER_SUCCESS:
       return {
         ...state,
-        isAuthenticated: true,
+        isAuthenticated: false,
         user: action.payload.user,
       };
     case LOGOUT:
@@ -120,7 +120,9 @@ function AuthProvider({ children }) {
   };
 
   const googleLogin = async (res, callback) => {
-    const response = await apiService.post("user/googleLogin", { tokenId: res.tokenId });
+    const response = await apiService.post("user/googleLogin", {
+      tokenId: res.tokenId,
+    });
     const { user, accessToken } = response.data;
 
     setSession(accessToken);
@@ -134,7 +136,10 @@ function AuthProvider({ children }) {
   };
 
   const facebookLogin = async (res, callback) => {
-    const response = await apiService.post("user/facebookLogin", { accessToken: res.accessToken, userID: res.userID });
+    const response = await apiService.post("user/facebookLogin", {
+      accessToken: res.accessToken,
+      userID: res.userID,
+    });
     const { user, accessToken } = response.data;
 
     setSession(accessToken);
