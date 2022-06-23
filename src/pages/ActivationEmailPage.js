@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams, Link as RouterLink } from "react-router-dom";
 import { activationEmail } from "../features/userSlice";
 
-function ActivationEmail() {
+function ActivationEmailPage() {
   const { activationToken } = useParams();
   const dispatch = useDispatch();
 
@@ -20,9 +20,11 @@ function ActivationEmail() {
       justifyContent="center"
       alignItems="center"
       spacing={2}
-      sx={{mt: 4}}
+      sx={{ mt: 4 }}
     >
-      <Typography sx={{fontSize: "30px"}}>Email verified successfully</Typography>
+      <Typography sx={{ fontSize: "30px" }}>
+        Email verified successfully
+      </Typography>
       <Button
         sx={{
           border: "none",
@@ -49,4 +51,4 @@ function ActivationEmail() {
   );
 }
 
-export default ActivationEmail;
+export default ActivationEmailPage;
